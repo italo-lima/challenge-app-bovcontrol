@@ -18,3 +18,9 @@ export const SubTitle = styled.Text`
   font-family: "Roboto_400Regular";
   color: #6c6c80;
 `;
+
+export const DaysContainer = styled.View`
+  flex-direction: row;
+  margin-top: 15px;
+  margin-bottom: 30px;
+`;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, TouchableOpacity } from "react-native";
+import { Alert, TouchableOpacity, ScrollView, Text, View } from "react-native";
 import * as Location from "expo-location";
 import { Feather as Icon } from "@expo/vector-icons";
 import api from "../../services/api";
@@ -9,8 +9,9 @@ import { AsyncStorage } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import CardToday from "../../components/CardToday";
+import Card from "../../components/Card";
 
-import { Container, Title, SubTitle } from "./styles";
+import { Container, Title, SubTitle, DaysContainer } from "./styles";
 
 export interface InfoDay {
   dt: number;
@@ -96,8 +97,10 @@ const Dashboard: React.FC = () => {
       } catch (e) {
         Alert.alert(
           "Algo de errado aconteceu",
-          `Verifica sua permisão para que possamos obter sua localização ou 
-          verifique se seu GPS está ativado`
+          `Possíveis problemas:
+          1. Verifica sua permisão para que possamos obter sua localização
+          2. Verifique se seu GPS está ativado
+          3. Verifique sua conexão com internet`
         );
 
         const infoDays = await AsyncStorage.getItem("@bovcontrol:infoDays");
@@ -118,15 +121,40 @@ const Dashboard: React.FC = () => {
       <Title>Acompanhe abaixo a previsão da sua localidade</Title>
       <SubTitle>Seja online ou offline, visualize a previsão do tempo</SubTitle>
 
-      {infoDays.map(
-        (infoDay) =>
-          infoDay.day.toUpperCase() === "HOJE" && (
-            <CardToday
-              key={infoDay.dt}
-              cloud={type_clouds[infoDay.cloud]}
-              info={infoDay}
-            />
-          )
+      {infoDays.length ? (
+        <>
+          {infoDays.map(
+            (infoDay) =>
+              infoDay.day.toUpperCase() === "HOJE" && (
+                <CardToday
+                  key={infoDay.dt}
+                  cloud={type_clouds[infoDay.cloud]}
+                  info={infoDay}
+                />
+              )
+          )}
+
+          <DaysContainer>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {infoDays.map(
+                (infoDay) =>
+                  infoDay.day.toUpperCase() !== "HOJE" && (
+                    <Card
+                      key={infoDay.dt}
+                      cloud={type_clouds[infoDay.cloud]}
+                      info={infoDay}
+                    />
+                  )
+              )}
+            </ScrollView>
+          </DaysContainer>
+        </>
+      ) : (
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <Text style={{ fontSize: 22 }}>Carregando...</Text>
+        </View>
       )}
     </Container>
   );
