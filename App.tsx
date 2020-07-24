@@ -1,21 +1,34 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from "react-native";
+import { AppLoading } from "expo";
+import React from "react";
+import {
+  Roboto_400Regular,
+  Roboto_500Medium,
+  useFonts,
+} from "@expo-google-fonts/roboto";
+
+import Routes from "./src/routes";
 
 export default function App() {
+  const [fondLoaded] = useFonts({
+    Roboto_400Regular,
+    Roboto_500Medium,
+  });
+
+  if (!fondLoaded) {
+    return <AppLoading />;
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <>
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor="transparent"
+        translucent
+      />
+      <Routes />
+    </>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+//https://api.openweathermap.org/data/2.5/onecall?lat=-9.5878468&lon=-36.795814&exclude=hourly,current,minutely&units=metric&lang=pt_br&appid=5246a571bfd9a807a41199d8582ac3bc
